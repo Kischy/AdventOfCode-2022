@@ -11,11 +11,13 @@ fn main() {
     let input = fs::read_to_string(file_path).unwrap();
 
     let mut rps_score_calculator = RPSCalculator::new();
-    let mut total_score = 0;
+    let mut total_score_part1 = 0;
+    let mut total_score_part2 = 0;
     for line in input.lines() {
-        total_score += rps_score_calculator.calculate_score(line);
+        total_score_part1 += rps_score_calculator.calculate_score_part1(line);
+        total_score_part2 += rps_score_calculator.calculate_score_part2(line);
     }
 
-    println!("Total score {}", total_score);
-
+    println!("Total score part 1 {}", total_score_part1);
+    println!("Total score part 2 {}", total_score_part2);
 }
