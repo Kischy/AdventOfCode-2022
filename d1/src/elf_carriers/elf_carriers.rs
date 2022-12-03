@@ -64,9 +64,15 @@ impl ElfCarriers {
         }
     }
 
-    pub fn get_fattest_elf(&self) -> ElfCarrier {
-        self.carriers.iter().next_back().unwrap().clone()
+    pub fn get_fattest_elf(&self) -> &ElfCarrier {
+        self.carriers.iter().next_back().unwrap()
     }
+
+    pub fn get_fattest_three_elfs(&self) -> Vec<ElfCarrier> {
+        let mut iter = self.carriers.iter();
+        vec![iter.next_back().unwrap().clone(),iter.next_back().unwrap().clone(),iter.next_back().unwrap().clone()]
+    }
+
 }
 
 #[cfg(test)]
