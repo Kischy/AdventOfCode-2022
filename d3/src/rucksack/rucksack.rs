@@ -7,7 +7,6 @@ pub(crate) fn get_wrongly_packed_item(rucksack: &str) -> char {
             return c;
         }
     }
-
     '\0'
 }
 
@@ -19,11 +18,22 @@ pub(crate) fn get_item_priority(item: char) -> u128 {
     item as u128 - 65 + 27
 }
 
+pub(crate) fn get_rucksacks_badge(rucksack1: &str, rucksack2: &str, rucksack3: &str) -> char {
+    for c in rucksack1.chars() {
+        if rucksack2.contains(c) && rucksack3.contains(c) {
+            return c;
+        }
+    }
+    '\0'
+}
+
 #[cfg(test)]
 mod tests {
 
     use crate::rucksack::rucksack::get_item_priority;
+    use crate::rucksack::rucksack::get_rucksacks_badge;
     use crate::rucksack::rucksack::get_wrongly_packed_item;
+
     #[test]
     fn get_wrongly_packed_item_tests() {
         assert_eq!(get_wrongly_packed_item("vJrwpWtwJgWrhcsFMMfFFhFp"), 'p');
@@ -48,5 +58,26 @@ mod tests {
         assert_eq!(get_item_priority('a'), 1);
         assert_eq!(get_item_priority('c'), 3);
         assert_eq!(get_item_priority('z'), 26);
+    }
+
+    #[test]
+    fn get_rucksacks_badge_tests() {
+        assert_eq!(
+            get_rucksacks_badge(
+                "vJrwpWtwJgWrhcsFMMfFFhFp",
+                "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL",
+                "PmmdzqPrVvPwwTWBwg"
+            ),
+            'r'
+        );
+
+        assert_eq!(
+            get_rucksacks_badge(
+                "wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn",
+                "ttgJtRGJQctTZtZT",
+                "CrZsJsPPZsGzwwsLwLmpwMDw"
+            ),
+            'Z'
+        );
     }
 }
