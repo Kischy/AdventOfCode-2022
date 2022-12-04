@@ -4,13 +4,6 @@ pub struct SectionRange {
 }
 
 impl SectionRange {
-    pub fn new() -> SectionRange {
-        SectionRange {
-            lower_boundary: 0,
-            upper_boundary: 0,
-        }
-    }
-
     pub fn from_string(range: &str) -> SectionRange {
         let vec = range.split("-").collect::<Vec<&str>>();
         SectionRange {
@@ -30,13 +23,6 @@ pub struct SectionAssignmentPair {
 }
 
 impl SectionAssignmentPair {
-    pub fn new() -> SectionAssignmentPair {
-        SectionAssignmentPair {
-            first: SectionRange::new(),
-            second: SectionRange::new(),
-        }
-    }
-
     pub fn from_string(range_pair: &str) -> SectionAssignmentPair {
         let vec = range_pair.split(",").collect::<Vec<&str>>();
         SectionAssignmentPair {
@@ -59,6 +45,7 @@ impl SectionAssignmentPair {
 #[cfg(test)]
 mod tests {
     use super::SectionAssignmentPair;
+    use super::SectionRange;
 
     #[test]
     fn section_assignments_from_string_test() {
@@ -71,7 +58,16 @@ mod tests {
 
     #[test]
     fn full_range_is_overlapping_false_test() {
-        let mut pair = SectionAssignmentPair::new();
+        let mut pair = SectionAssignmentPair {
+            first: SectionRange {
+                lower_boundary: 2,
+                upper_boundary: 4,
+            },
+            second: SectionRange {
+                lower_boundary: 6,
+                upper_boundary: 8,
+            }
+        };
         pair.first.lower_boundary = 2;
         pair.first.upper_boundary = 4;
         pair.second.lower_boundary = 6;
@@ -87,11 +83,16 @@ mod tests {
 
     #[test]
     fn full_range_is_overlapping_true_tests() {
-        let mut pair = SectionAssignmentPair::new();
-        pair.first.lower_boundary = 5;
-        pair.first.upper_boundary = 6;
-        pair.second.lower_boundary = 4;
-        pair.second.upper_boundary = 9;
+        let mut pair = SectionAssignmentPair {
+            first: SectionRange {
+                lower_boundary: 5,
+                upper_boundary: 7,
+            },
+            second: SectionRange {
+                lower_boundary: 4,
+                upper_boundary: 9,
+            }
+        };
         assert!(pair.full_range_is_overlapping());
 
         pair.first.lower_boundary = 4;
@@ -115,11 +116,16 @@ mod tests {
 
     #[test]
     fn is_overlapping_true_tests() {
-        let mut pair = SectionAssignmentPair::new();
-        pair.first.lower_boundary = 5;
-        pair.first.upper_boundary = 7;
-        pair.second.lower_boundary = 7;
-        pair.second.upper_boundary = 9;
+        let mut pair = SectionAssignmentPair {
+            first: SectionRange {
+                lower_boundary: 5,
+                upper_boundary: 7,
+            },
+            second: SectionRange {
+                lower_boundary: 7,
+                upper_boundary: 9,
+            }
+        };
         assert!(pair.is_overlapping());
 
         pair.first.lower_boundary = 2;
@@ -143,11 +149,16 @@ mod tests {
 
     #[test]
     fn is_overlapping_false_tests() {
-        let mut pair = SectionAssignmentPair::new();
-        pair.first.lower_boundary = 2;
-        pair.first.upper_boundary = 4;
-        pair.second.lower_boundary = 6;
-        pair.second.upper_boundary = 8;
+        let mut pair = SectionAssignmentPair {
+            first: SectionRange {
+                lower_boundary: 2,
+                upper_boundary: 4,
+            },
+            second: SectionRange {
+                lower_boundary: 6,
+                upper_boundary: 8,
+            }
+        };       
         assert!(pair.is_overlapping() == false);
 
         pair.first.lower_boundary = 2;
