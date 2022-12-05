@@ -1,10 +1,6 @@
 use regex;
 use std::collections::VecDeque;
 
-pub struct Cargo {
-    crates: VecDeque<VecDeque<char>>,
-}
-
 fn add_cargo_line(crates: &mut VecDeque<VecDeque<char>>, crate_line_descr: &Vec<char>) {
     let step = 4;
     for i in (0usize..crate_line_descr.len()).step_by(step) {
@@ -42,6 +38,11 @@ fn get_move_values(move_line: &str) -> MoveValues {
     }
 }
 
+#[derive(Clone)]
+pub struct Cargo {
+    crates: VecDeque<VecDeque<char>>,
+}
+
 impl Cargo {
     pub fn from_string(cargo: &str) -> Cargo {
         let mut crates: VecDeque<VecDeque<char>> = VecDeque::new();
@@ -69,13 +70,25 @@ impl Cargo {
         top_crates
     }
 
-    pub fn move_crates(&mut self, move_line: &str) {
+    pub fn move_crates_9000(&mut self, move_line: &str) {
         let move_val = get_move_values(move_line);
         for _ in 0..move_val.quantity {
             if let Some(cr) = self.crates[move_val.from_index].pop_back() {
                 self.crates[move_val.to_index].push_back(cr);
             }
         }
+    }
+
+    pub fn move_crates_9001(&mut self, move_line: &str) {
+        let move_val = get_move_values(move_line);
+
+        let mut tmp: VecDeque<char> = VecDeque::new();
+        for _ in 0..move_val.quantity {
+            if let Some(cr) = self.crates[move_val.from_index].pop_back() {
+                tmp.push_front(cr)
+            }
+        }
+        self.crates[move_val.to_index].append(&mut tmp);
     }
 }
 
@@ -169,7 +182,7 @@ mod cargo_tests {
     }
 
     #[test]
-    fn move_crates_test() {
+    fn move_crates_9000_test() {
         let mut cargo = Cargo {
             crates: VecDeque::new(),
         };
@@ -177,7 +190,7 @@ mod cargo_tests {
         cargo.crates.push_back(VecDeque::from(vec!['M', 'C', 'D']));
         cargo.crates.push_back(VecDeque::from(vec!['P']));
 
-        cargo.move_crates("move 1 from 2 to 1");
+        cargo.move_crates_9000("move 1 from 2 to 1");
         {
             let crates = &cargo.crates;
             assert_eq!(crates[0], VecDeque::from(vec!['Z', 'N', 'D']));
@@ -185,7 +198,7 @@ mod cargo_tests {
             assert_eq!(crates[2], VecDeque::from(vec!['P']));
         }
 
-        cargo.move_crates("move 3 from 1 to 3");
+        cargo.move_crates_9000("move 3 from 1 to 3");
         {
             let crates = &cargo.crates;
             assert_eq!(crates[0], VecDeque::from(vec![]));
@@ -193,7 +206,7 @@ mod cargo_tests {
             assert_eq!(crates[2], VecDeque::from(vec!['P', 'D', 'N', 'Z']));
         }
 
-        cargo.move_crates("move 2 from 2 to 1");
+        cargo.move_crates_9000("move 2 from 2 to 1");
         {
             let crates = &cargo.crates;
             assert_eq!(crates[0], VecDeque::from(vec!['C', 'M']));
@@ -201,12 +214,54 @@ mod cargo_tests {
             assert_eq!(crates[2], VecDeque::from(vec!['P', 'D', 'N', 'Z']));
         }
 
-        cargo.move_crates("move 1 from 1 to 2");
+        cargo.move_crates_9000("move 1 from 1 to 2");
         {
             let crates = &cargo.crates;
             assert_eq!(crates[0], VecDeque::from(vec!['C']));
             assert_eq!(crates[1], VecDeque::from(vec!['M']));
             assert_eq!(crates[2], VecDeque::from(vec!['P', 'D', 'N', 'Z']));
+        }
+    }
+
+    #[test]
+    fn move_crates_9001_test() {
+        let mut cargo = Cargo {
+            crates: VecDeque::new(),
+        };
+        cargo.crates.push_back(VecDeque::from(vec!['Z', 'N']));
+        cargo.crates.push_back(VecDeque::from(vec!['M', 'C', 'D']));
+        cargo.crates.push_back(VecDeque::from(vec!['P']));
+
+        cargo.move_crates_9001("move 1 from 2 to 1");
+        {
+            let crates = &cargo.crates;
+            assert_eq!(crates[0], VecDeque::from(vec!['Z', 'N', 'D']));
+            assert_eq!(crates[1], VecDeque::from(vec!['M', 'C']));
+            assert_eq!(crates[2], VecDeque::from(vec!['P']));
+        }
+
+        cargo.move_crates_9001("move 3 from 1 to 3");
+        {
+            let crates = &cargo.crates;
+            assert_eq!(crates[0], VecDeque::from(vec![]));
+            assert_eq!(crates[1], VecDeque::from(vec!['M', 'C']));
+            assert_eq!(crates[2], VecDeque::from(vec!['P', 'Z', 'N', 'D']));
+        }
+
+        cargo.move_crates_9001("move 2 from 2 to 1");
+        {
+            let crates = &cargo.crates;
+            assert_eq!(crates[0], VecDeque::from(vec!['M', 'C']));
+            assert_eq!(crates[1], VecDeque::from(vec![]));
+            assert_eq!(crates[2], VecDeque::from(vec!['P', 'Z', 'N', 'D']));
+        }
+
+        cargo.move_crates_9001("move 1 from 1 to 2");
+        {
+            let crates = &cargo.crates;
+            assert_eq!(crates[0], VecDeque::from(vec!['M']));
+            assert_eq!(crates[1], VecDeque::from(vec!['C']));
+            assert_eq!(crates[2], VecDeque::from(vec!['P', 'Z', 'N', 'D']));
         }
     }
 }

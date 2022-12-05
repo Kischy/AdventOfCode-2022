@@ -16,15 +16,23 @@ fn main() {
     let cargo_str = &inputs[0];
     let moves = &inputs[1];
 
-    let mut cargo = Cargo::from_string(cargo_str);
+    let mut cargo_9000 = Cargo::from_string(cargo_str);
+    let mut cargo_9001 = cargo_9000.clone();
 
     for one_move in moves.lines() {
         if one_move.is_empty() {
             continue;
         }
-        cargo.move_crates(&one_move);
+        cargo_9000.move_crates_9000(&one_move);
+        cargo_9001.move_crates_9001(&one_move);
     }
 
-    println!("🎄 All crates {:?}", cargo.get_crates());
-    println!("🎄 Top crates are {}", cargo.get_top_crates());
+    println!(
+        "🎄 Top crates for CrateMover9000 are {}",
+        cargo_9000.get_top_crates()
+    );
+    println!(
+        "🎄 Top crates for CrateMover9001 are {}",
+        cargo_9001.get_top_crates()
+    );
 }
