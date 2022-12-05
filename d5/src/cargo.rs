@@ -6,13 +6,14 @@ pub struct Cargo {
 }
 
 fn add_cargo_line(crates: &mut VecDeque<VecDeque<char>>, crate_line_descr: &Vec<char>) {
-    for i in (0usize..crate_line_descr.len()).step_by(4) {
+    let step = 4;
+    for i in (0usize..crate_line_descr.len()).step_by(step) {
         if crate_line_descr.len() <= i + 1 {
             break;
         }
 
         if crate_line_descr[i + 1].is_alphabetic() {
-            let vec_index = i / 3;
+            let vec_index = i / step;
             while vec_index >= crates.len() {
                 crates.push_back(VecDeque::new());
             }
@@ -86,7 +87,7 @@ mod cargo_tests {
     use std::collections::VecDeque;
 
     #[test]
-    fn from_string_tests() {
+    fn from_string_tests1() {
         let cargo_input = indoc! {"
             [D]
         [N] [C]    
@@ -100,6 +101,51 @@ mod cargo_tests {
         assert_eq!(crates[0], VecDeque::from(vec!['Z', 'N']));
         assert_eq!(crates[1], VecDeque::from(vec!['M', 'C', 'D']));
         assert_eq!(crates[2], VecDeque::from(vec!['P']));
+    }
+
+    #[test]
+    fn from_string_tests2() {
+        let cargo_input = indoc! {"
+            [G]         [P]         [M]    
+            [V]     [M] [W] [S]     [Q]    
+            [N]     [N] [G] [H]     [T] [F]
+            [J]     [W] [V] [Q] [W] [F] [P]
+        [C] [H]     [T] [T] [G] [B] [Z] [B]
+        [S] [W] [S] [L] [F] [B] [P] [C] [H]
+        [G] [M] [Q] [S] [Z] [T] [J] [D] [S]
+        [B] [T] [M] [B] [J] [C] [T] [G] [N]
+        1   2   3   4   5   6   7   8   9 
+        "};
+        let cargo = Cargo::from_string(cargo_input);
+        let crates = &cargo.crates;
+        assert_eq!(crates.len(), 9);
+        assert_eq!(crates[0], VecDeque::from(vec!['B', 'G', 'S', 'C']));
+        assert_eq!(
+            crates[1],
+            VecDeque::from(vec!['T', 'M', 'W', 'H', 'J', 'N', 'V', 'G'])
+        );
+        assert_eq!(crates[2], VecDeque::from(vec!['M', 'Q', 'S']));
+        assert_eq!(
+            crates[3],
+            VecDeque::from(vec!['B', 'S', 'L', 'T', 'W', 'N', 'M'])
+        );
+        assert_eq!(
+            crates[4],
+            VecDeque::from(vec!['J', 'Z', 'F', 'T', 'V', 'G', 'W', 'P'])
+        );
+        assert_eq!(
+            crates[5],
+            VecDeque::from(vec!['C', 'T', 'B', 'G', 'Q', 'H', 'S'])
+        );
+        assert_eq!(crates[6], VecDeque::from(vec!['T', 'J', 'P', 'B', 'W']));
+        assert_eq!(
+            crates[7],
+            VecDeque::from(vec!['G', 'D', 'C', 'Z', 'F', 'T', 'Q', 'M'])
+        );
+        assert_eq!(
+            crates[8],
+            VecDeque::from(vec!['N', 'S', 'H', 'B', 'P', 'F'])
+        );
     }
 
     #[test]
@@ -117,9 +163,9 @@ mod cargo_tests {
         };
         cargo.crates.push_back(VecDeque::from(vec!['Z', 'N']));
         cargo.crates.push_back(VecDeque::from(vec!['M', 'C', 'D']));
-        cargo.crates.push_back(VecDeque::from(vec!['P']));
+        cargo.crates.push_back(VecDeque::from(vec!['A']));
 
-        assert_eq!(cargo.get_top_crates(), "NDP");
+        assert_eq!(cargo.get_top_crates(), "NDA");
     }
 
     #[test]
