@@ -21,8 +21,7 @@ fn contains_only_unique(char_counters: &HashMap<char, u64>, num_of_unique_chars:
     char_counters.len() == num_of_unique_chars
 }
 
-pub fn find_marker(datastream: &str) -> usize {
-    let num_of_unique_chars = 4;
+pub fn find_marker_or_msg(datastream: &str, num_of_unique_chars: usize) -> usize {
     let mut char_counters: HashMap<char, u64> = HashMap::new();
     let data: Vec<char> = datastream.chars().collect();
 
@@ -47,14 +46,55 @@ pub fn find_marker(datastream: &str) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use super::find_marker;
+    use super::find_marker_or_msg;
 
     #[test]
-    fn find_marker_tests() {
-        assert_eq!(find_marker("mjqjpqmgbljsphdztnvjfqwrcgsmlb"), 7);
-        assert_eq!(find_marker("bvwbjplbgvbhsrlpgdmjqwftvncz"), 5);
-        assert_eq!(find_marker("nppdvjthqldpwncqszvftbrmjlhg"), 6);
-        assert_eq!(find_marker("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"), 10);
-        assert_eq!(find_marker("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"), 11);
+    fn find_marker_tests_4_tests() {
+        let unique_count = 4;
+        assert_eq!(
+            find_marker_or_msg("mjqjpqmgbljsphdztnvjfqwrcgsmlb", unique_count),
+            7
+        );
+        assert_eq!(
+            find_marker_or_msg("bvwbjplbgvbhsrlpgdmjqwftvncz", unique_count),
+            5
+        );
+        assert_eq!(
+            find_marker_or_msg("nppdvjthqldpwncqszvftbrmjlhg", unique_count),
+            6
+        );
+        assert_eq!(
+            find_marker_or_msg("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", unique_count),
+            10
+        );
+        assert_eq!(
+            find_marker_or_msg("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", unique_count),
+            11
+        );
+    }
+
+    #[test]
+    fn find_marker_tests_14_tests() {
+        let unique_count = 14;
+        assert_eq!(
+            find_marker_or_msg("mjqjpqmgbljsphdztnvjfqwrcgsmlb", unique_count),
+            19
+        );
+        assert_eq!(
+            find_marker_or_msg("bvwbjplbgvbhsrlpgdmjqwftvncz", unique_count),
+            23
+        );
+        assert_eq!(
+            find_marker_or_msg("nppdvjthqldpwncqszvftbrmjlhg", unique_count),
+            23
+        );
+        assert_eq!(
+            find_marker_or_msg("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg", unique_count),
+            29
+        );
+        assert_eq!(
+            find_marker_or_msg("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw", unique_count),
+            26
+        );
     }
 }
