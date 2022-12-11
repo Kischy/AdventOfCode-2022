@@ -78,4 +78,13 @@ fn main() {
         inspections: 0,
     };
     monkey_business.add_monkey(m7);
+
+    for _ in 0..20 {
+        monkey_business.do_one_round();
+    }
+
+    println!(
+        "🎄 Monkey buisness after 20 rounds {}",
+        monkey_business.level_of_monkey_business()
+    );
 }
