@@ -63,8 +63,8 @@ impl MonkeyBusiness {
     }
 
     fn do_turn(&mut self, monkey_id: usize) {
-        let mut items_len = self.monkeys[monkey_id].items.len();
-        for i in 0..items_len {
+        let items_len = self.monkeys[monkey_id].items.len();
+        for _ in 0..items_len {
             let item = self.monkeys[monkey_id].items.pop_front().unwrap();
             self.do_item(monkey_id, item);
         }

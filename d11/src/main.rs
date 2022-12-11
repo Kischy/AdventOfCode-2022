@@ -1,4 +1,4 @@
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 
 use monkey_business::{Monkey, MonkeyBusiness};
 
