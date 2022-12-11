@@ -79,12 +79,31 @@ fn main() {
     };
     monkey_business.add_monkey(m7);
 
+    let mut monkey_business_2 = MonkeyBusiness::new();
+    monkey_business_2.monkeys = monkey_business.monkeys.clone();
+
     for _ in 0..20 {
         monkey_business.do_one_round();
     }
 
     println!(
-        "🎄 Monkey buisness after 20 rounds {}",
+        "🎄 I do not worry too much. Monkey buisness after 20 rounds {}",
         monkey_business.level_of_monkey_business()
+    );
+
+    let mut relaxing_value = 1;
+    for monkey in &monkey_business_2.monkeys {
+        relaxing_value *= monkey.test_number;
+    }
+
+    monkey_business_2.adjust_worry_level = Box::new(move |old| old % relaxing_value);
+
+    for _ in 0..10000 {
+        monkey_business_2.do_one_round();
+    }
+
+    println!(
+        "🎄 I do worry a lot. Monkey buisness after 10000 rounds {}",
+        monkey_business_2.level_of_monkey_business()
     );
 }

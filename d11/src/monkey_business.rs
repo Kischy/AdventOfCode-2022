@@ -33,13 +33,15 @@ impl PartialEq for Monkey {
 impl Eq for Monkey {}
 
 pub struct MonkeyBusiness {
-    monkeys: VecDeque<Monkey>,
+    pub monkeys: VecDeque<Monkey>,
+    pub adjust_worry_level: Box<dyn Fn(u64) -> u64>,
 }
 
 impl MonkeyBusiness {
     pub fn new() -> MonkeyBusiness {
         MonkeyBusiness {
             monkeys: VecDeque::new(),
+            adjust_worry_level: Box::new(|old| old / 3),
         }
     }
 
@@ -50,7 +52,7 @@ impl MonkeyBusiness {
     fn do_item(&mut self, monkey_id: usize, mut item: u64) {
         let mut monkey = &mut self.monkeys[monkey_id];
         item = (monkey.operation)(item);
-        item /= 3;
+        item = (self.adjust_worry_level)(item);
         let mut throw_to = monkey.throw_to[1];
         if item % monkey.test_number == 0 {
             throw_to = monkey.throw_to[0];
