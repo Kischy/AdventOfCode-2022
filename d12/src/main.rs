@@ -12,23 +12,12 @@ fn main() {
 
     let mut nodes = Nodes::from_AoC_string(&input);
 
-    println!("🎄 {},{}", nodes.start, nodes.end);
-    println!("🎄 {}", nodes.get_shortest_path_length());
-
-    // for node in &nodes.nodes {
-    //     if node.connections.len() != 4 {
-    //         println!("{},{},{}", node.index, node.orig_char, node.connections.len());
-    //     }
-    // }
-
-    // for node in &nodes.nodes {
-    //     if node.distance_to_start == i64::MAX {
-    //         print!("M,");
-    //     } else {
-    //         print!("{},", node.distance_to_start);
-    //     }
-    //     if node.index % 159 == 0 {
-    //         print!("\n");
-    //     }
-    // }
+    println!(
+        "🎄 Shortest path part 1: {}",
+        nodes.get_shortest_path_length().unwrap()
+    );
+    println!(
+        "🎄 Shortest path from letter a: {}",
+        nodes.get_shortest_path_from_letter_a()
+    );
 }

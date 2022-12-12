@@ -38,7 +38,7 @@ fn get_reopresented_heigth(letter: char) -> i64 {
     letter as i64 - 97
 }
 
-fn get_connection(from: char, from_i: usize, to: char, to_i: usize) -> Connection {
+fn get_connection(from_i: usize, to_i: usize) -> Connection {
     Connection {
         weight: 1,
         from_node: from_i,
@@ -46,9 +46,8 @@ fn get_connection(from: char, from_i: usize, to: char, to_i: usize) -> Connectio
     }
 }
 
-fn add_connection(node: &mut Node, from: char, from_i: usize, to: char, to_i: usize) {
-    node.connections
-        .push_back(get_connection(from, from_i, to, to_i));
+fn add_connection(node: &mut Node, from_i: usize, to_i: usize) {
+    node.connections.push_back(get_connection(from_i, to_i));
 }
 
 fn get_resulting_index(i: usize, j: usize, len_of_row: usize) -> usize {
@@ -87,40 +86,40 @@ impl Nodes {
 
         for i in 0..num_of_lines {
             for j in 0..num_of_chars {
-                let res_index = get_resulting_index(i, j, num_of_chars);
+                let res_index_from = get_resulting_index(i, j, num_of_chars);
                 let from = lines[i][j];
-                let mut node = Node::new(res_index, from);
+                let mut node = Node::new(res_index_from, from);
                 if from == 'S' {
-                    nodes.start = res_index;
+                    nodes.start = res_index_from;
                 } else if from == 'E' {
-                    nodes.end = res_index;
+                    nodes.end = res_index_from;
                 }
 
                 if i > 0 {
                     let top_i = i - 1;
                     let res_ind = get_resulting_index(top_i, j, num_of_chars);
                     let to = lines[top_i][j];
-                    add_connection(&mut node, from, res_index, to, res_ind);
+                    add_connection(&mut node, res_index_from, res_ind);
                 }
                 if i < lines.len() - 1 {
                     let bottom_i = i + 1;
                     let res_ind = get_resulting_index(bottom_i, j, num_of_chars);
                     let to = lines[bottom_i][j];
-                    add_connection(&mut node, from, res_index, to, res_ind);
+                    add_connection(&mut node, res_index_from, res_ind);
                 }
 
                 if j > 0 {
                     let left_j = j - 1;
                     let res_ind = get_resulting_index(i, left_j, num_of_chars);
                     let to = lines[i][left_j];
-                    add_connection(&mut node, from, res_index, to, res_ind);
+                    add_connection(&mut node, res_index_from, res_ind);
                 }
 
                 if j < lines[i].len() - 1 {
                     let right_j = j + 1;
                     let res_ind = get_resulting_index(i, right_j, num_of_chars);
                     let to = lines[i][right_j];
-                    add_connection(&mut node, from, res_index, to, res_ind);
+                    add_connection(&mut node, res_index_from, res_ind);
                 }
 
                 nodes.add_node(node);
@@ -146,15 +145,30 @@ impl Nodes {
                 index = *ind;
             }
         }
-        // if let Some(m) = min {
-        //     if m == i64::MAX {
-        //         panic!("Min should never max out");
-        //     }
-        // }
+
         index
     }
 
-    pub fn get_shortest_path_length(&mut self) -> i64 {
+    pub fn get_shortest_path_from_letter_a(&mut self) -> i64 {
+        let mut min = i64::MAX;
+
+        for node in &self.nodes.clone() {
+            if node.orig_char == 'a' || node.orig_char == 'S' {
+                self.start = node.index;
+                let tmp = self.get_shortest_path_length();
+                println!("Calculating for index: {}, Result: {:?}", node.index, tmp);
+                if let Some(m) = tmp {
+                    if m < min {
+                        min = m;
+                    }
+                }
+            }
+        }
+
+        min
+    }
+
+    pub fn get_shortest_path_length(&mut self) -> Option<i64> {
         for node in &mut self.nodes {
             node.visited = false;
             node.distance_to_start = i64::MAX;
@@ -169,7 +183,6 @@ impl Nodes {
             }
 
             let ind = self.get_node_with_shortest_dist_to_start(&unknown_nodes);
-            // println!("{},{}", ind, self.nodes[ind].distance_to_start);
             unknown_nodes.remove(&ind);
             self.nodes[ind].visited = true;
             if ind == self.end {
@@ -188,14 +201,16 @@ impl Nodes {
                     continue;
                 }
 
-                let tmp = from_node_dist + connection.weight;
-                if tmp < node.distance_to_start {
-                    node.distance_to_start = tmp;
+                let tmp: i128 = from_node_dist as i128 + connection.weight as i128;
+                if tmp < node.distance_to_start as i128 {
+                    node.distance_to_start = tmp as i64;
                 }
             }
         }
-
-        self.nodes[self.end].distance_to_start
+        if self.nodes[self.end].visited && self.nodes[self.end].distance_to_start != i64::MAX {
+            return Some(self.nodes[self.end].distance_to_start);
+        }
+        None
     }
 }
 
@@ -267,8 +282,10 @@ mod tests {
         assert_eq!(node12_conn3.from_node, 12);
         assert_eq!(node12_conn3.to_node, 12 + 1);
 
-        assert_eq!(nodes.get_shortest_path_length(), 31);
+        assert_eq!(nodes.get_shortest_path_length(), Some(31));
 
         assert_eq!(nodes.nodes[8].distance_to_start, 1);
+
+        assert_eq!(nodes.get_shortest_path_from_letter_a(), 29);
     }
 }
