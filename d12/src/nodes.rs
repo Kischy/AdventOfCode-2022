@@ -156,7 +156,7 @@ impl Nodes {
             if node.orig_char == 'a' || node.orig_char == 'S' {
                 self.start = node.index;
                 let tmp = self.get_shortest_path_length();
-                println!("Calculating for index: {}, Result: {:?}", node.index, tmp);
+                // println!("Calculating for index: {}, Result: {:?}", node.index, tmp);
                 if let Some(m) = tmp {
                     if m < min {
                         min = m;
