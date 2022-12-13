@@ -11,7 +11,7 @@ fn vec_compare(left: &Vec<serde_json::Value>, right: &Vec<serde_json::Value>) ->
     left.len().partial_cmp(&right.len())
 }
 
-fn value_compare(left: &serde_json::Value, right: &serde_json::Value) -> Option<Ordering> {
+pub fn value_compare(left: &serde_json::Value, right: &serde_json::Value) -> Option<Ordering> {
     match (left, right) {
         (serde_json::Value::Number(l), serde_json::Value::Number(r)) => {
             let li = l.as_u64();
@@ -26,7 +26,7 @@ fn value_compare(left: &serde_json::Value, right: &serde_json::Value) -> Option<
         }
         (serde_json::Value::Array(l), serde_json::Value::Array(r)) => vec_compare(l, r),
         _ => {
-            panic!("Unkown combination")
+            panic!("Unknown combination")
         }
     }
 }
