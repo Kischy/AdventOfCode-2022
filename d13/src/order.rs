@@ -7,7 +7,7 @@ fn vec_compare(left: &Vec<serde_json::Value>, right: &Vec<serde_json::Value>) ->
             return res;
         }
     }
-
+    // All values where equal - length of inputs might be different
     left.len().partial_cmp(&right.len())
 }
 
@@ -37,15 +37,15 @@ pub fn is_in_correct_order(left: &str, right: &str) -> bool {
 
     match (ljson, rjson) {
         (None, None) => {
-            println! {"Both?: {left}|||{right}"}
+            println! {"Both wrong?: {left}|||{right}"}
             return false;
         }
         (None, Some(_)) => {
-            println! {"Left?: {left}|||{right}"};
+            println! {"Left wrong?: {left}|||{right}"};
             return false;
         }
         (Some(_), None) => {
-            println! {"Right?: {left}|||{right}"};
+            println! {"Right wrong?: {left}|||{right}"};
             return false;
         }
         (Some(lj), Some(rj)) => {

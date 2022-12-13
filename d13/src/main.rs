@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::iter::zip;
 
 use order::is_in_correct_order;
 use order::value_compare;
@@ -33,7 +34,10 @@ fn main() {
         current_index += 1;
     }
 
-    println!("🎄 Sum or indices of unordered packages {}", sum_of_indices);
+    println!(
+        "🎄 Sum or indices of unordered packages: {}",
+        sum_of_indices
+    );
 
     packets.sort_by(|&l, &r| {
         let ljson: serde_json::Value = serde_json::from_str(l).unwrap();
@@ -46,7 +50,7 @@ fn main() {
     });
 
     println!(
-        "🎄 Product of devider packages {}",
+        "🎄 Product of devider packages: {}",
         (packets.iter().position(|&s| s == divider1).unwrap() + 1)
             * (packets.iter().position(|&s| s == divider2).unwrap() + 1)
     );
